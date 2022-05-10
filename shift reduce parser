@@ -1,0 +1,97 @@
+TITLE: Shift Reduce Parser
+
+
+AIM:
+A program to implement Shift Reduce Parser
+
+
+ALGORITHM:
+Shift Reduce parser attempts for the construction of parse in a 
+similar manner as done in bottom-up parsing i.e. the parse tree is 
+constructed from leaves(bottom) to the root(up). A more general 
+form of the shift-reduce parser is the LR parser. 
+This parser requires some data structures i.e. 
+1. An input buffer for storing the input string.
+2. A stack for storing and accessing the production rules.
+Basic Operations – 
+Shift: This involves moving symbols from the input buffer onto 
+the stack.
+Reduce: If the handle appears on top of the stack then, its 
+reduction by using appropriate production rule is done i.e. RHS of 
+a production rule is popped out of a stack and LHS of a 
+production rule is pushed onto the stack.
+Accept: If only the start symbol is present in the stack and the 
+input buffer is empty then, the parsing action is called accept. 
+When accepted action is obtained, it is means successful parsing 
+is done.
+Error: This is the situation in which the parser can neither 
+perform shift action nor reduce action and not even accept 
+action.
+
+
+CODE:
+#include<iostream>
+#include<string.h>
+using namespace std;
+struct prodn
+{
+char p1[10];
+char p2[10];
+};
+int main()
+{
+char input[20],stack[50],temp[50],ch[2],*t1,*t2,*t;
+int i,j,s1,s2,s,count=0;
+struct prodn p[10];
+FILE *fp=fopen("sr_input.txt","r");
+stack[0]='\0';
+cout<<"Enter the Input String:\n";
+cin>>input;
+while(!feof(fp))
+{
+fscanf(fp,"%s\n",temp);
+t1=strtok(temp,"->");
+t2=strtok(NULL,"->");
+strcpy(p[count].p1,t1);
+strcpy(p[count].p2,t2);
+count++;
+}
+i=0;
+while(1)
+{
+if(i<strlen(input))
+{
+ch[0]=input[i];
+ch[1]='\0';
+i++;
+strcat(stack,ch);
+cout<<"\n"<<stack;
+}
+for(j=0;j<count;j++)
+{
+t=strstr(stack,p[j].p2);
+if(t!=NULL)
+{
+s1=strlen(stack);
+s2=strlen(t);
+s=s1-s2;
+stack[s]='\0';
+strcat(stack,p[j].p1);
+cout<<"\n"<<stack;
+j=-1;
+}
+}
+if(strcmp(stack,"E")==0&&i==strlen(input))
+{
+cout<<"\n\nAccepted";
+break;
+}
+if(i==strlen(input))
+
+{
+cout<<"\n\nNot Accepted";
+break;
+}
+}
+return 0;
+}
